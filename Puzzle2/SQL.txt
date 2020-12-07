@@ -1,0 +1,54 @@
+declare @P as int
+declare @Total as int
+set @P=3
+set @Total=2020;
+
+with cte as (
+	select data,@P as P,cast(data.data as int) as Total,@P-1 as cpt
+	from data
+	where cast(data.data as int) <@Total
+	union all
+	select cast(cte.data+ ','+data.data as varchar(150)) as data,cte.p-1 as P,cte.Total+cast(data.data as int) as Total,cpt-1
+	from data
+	cross join cte
+	where cast(data.data as int) <@Total
+	and cte.P=cpt+1
+	and cpt>0
+	and Total<@Total
+)
+
+
+	SELECT distinct 'Value' as Rep,  LTRIM(RTRIM(Split.a.value('.', 'VARCHAR(100)'))) 'Value' 
+	FROM  
+	(       
+		select CAST ('<M>' + REPLACE(data, ',', '</M><M>') + '</M>' AS XML) AS Data 
+		from cte
+		where total=@Total
+		and cpt=0
+	         
+	) AS A 
+	CROSS APPLY Data.nodes ('/M') AS Split(a)
+
+UNION ALL
+
+select 'Multiplication' as Rep, CASE WHEN MIN(abs(data)) = 0 then 0 ELSE
+       EXP(SUM(Log(abs(nullif(data,0))))) -- the base mathematics
+     * round(0.5-count(nullif(sign(sign(data)+0.5),1))%2,0) -- pairs up negatives
+       END
+from  
+(	SELECT distinct  LTRIM(RTRIM(Split.a.value('.', 'VARCHAR(100)'))) as data
+	FROM  
+	(       
+		 select CAST ('<M>' + REPLACE(data, ',', '</M><M>') + '</M>' AS XML) AS Data 
+		from cte
+		where total=@Total
+		and cpt=0
+	         
+	) AS A 
+	CROSS APPLY Data.nodes ('/M') AS Split(a)
+	)
+	sReq
+
+	
+
+--100655544
