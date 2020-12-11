@@ -9,17 +9,18 @@ while(!feof($data)){
 }
 
 
-function scroll($DataArray,$x,$y,$J,$Car,$CarBloc=''){
+function scroll($DataArray,$x,$y,$J,$Car,$CarBloc){
 	$Nbadj=0;
 	if(($x+$J[0])>=0 &&($x+$J[0]) <count($DataArray)){
 		if(($y+$J[1])>=0 &&($y+$J[1]) <count($DataArray[($x+$J[0])])){
-			switch($DataArray[($x+$J[0])][($y+$J[1])]){
-				case 'L' :
+			$Car=$DataArray[($x+$J[0])][($y+$J[1])];
+			switch(TRUE){
+				case ($Car=='L') :
 					break;
-				case '.' :
+				case ($Car=='.') :
 					$Nbadj+=scroll($DataArray,($x+$J[0]),($y+$J[1]),$J,$Car,$CarBloc='');
 					break;
-				case '#' :
+				case ($Car=='#') :
 					$Nbadj++;
 					break;
 			}
@@ -29,11 +30,11 @@ function scroll($DataArray,$x,$y,$J,$Car,$CarBloc=''){
 }
 
 
-function CheckAdjVisible($DataArray,$x,$y,$Car,$CarBloc=''){
+function CheckAdjVisible($DataArray,$x,$y,$Car,$CarBloc){
 	$Nbadj=0;
 	$Jmp=array(array(-1,-1),array(-1,0),array(-1,1),array(0,-1),array(0,1),array(1,-1),array(1,0),array(1,1));
 	foreach($Jmp as $J){
-		$Nbadj+=scroll($DataArray,$x,$y,$J,$Car,$CarBloc='');
+		$Nbadj+=scroll($DataArray,$x,$y,$J,$Car,$CarBloc);
 	}
 	return $Nbadj;
 }
@@ -61,10 +62,8 @@ while ($PreviousWorkTab!=$WorkTab){
 $NbOcc=0;
 for($i=0;$i<count($WorkTab);$i++){
 	for($j=0;$j<count($WorkTab[$i]);$j++){
-		echo $WorkTab[$i][$j];
 		$NbOcc+=$WorkTab[$i][$j]=="#"? 1 : 0;	
 	}
-	echo "<br>";
 }
 echo "NbOcc : ".$NbOcc;
 ?>
