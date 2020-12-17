@@ -1,5 +1,5 @@
 <?php
-
+$debut = microtime(true);
 $data = fopen('data.txt', 'r');
 $DataArray=array();
 
@@ -8,7 +8,6 @@ $z=0;
 $w=0;
 $x=0;
 while(!feof($data)){
-
 	$Line = fgets($data);
 	$Line = str_split(trim($Line));
 	for($y=0;$y<count($Line);$y++){
@@ -16,6 +15,7 @@ while(!feof($data)){
 	}
 	$x++;
 }
+
 
 function nbNeighboursActive($DataArray,$x,$y,$z,$w){
 	$nbNeighbours=0;
@@ -35,14 +35,14 @@ function nbNeighboursActive($DataArray,$x,$y,$z,$w){
 		}
 	}
 	return $nbNeighbours;
-	
 }
-function Expend($Array,$NbCycles){
+
+function Expend($Array,$NbCycles,$MinI,$MaxI,$MinJ,$MaxJ,$MinK,$MaxK,$MinL,$MaxL){
 	$ArrayRes=array();
-	for($i=array_key_first($Array)-$NbCycles;$i<=array_key_last($Array)+$NbCycles;$i++){
-		for($j=array_key_first($Array[0])-$NbCycles;$j<=array_key_last($Array[0])+$NbCycles;$j++){
-			for($k=array_key_first($Array[0][0])-$NbCycles;$k<=array_key_last($Array[0][0])+$NbCycles;$k++){
-				for($l=array_key_first($Array[0][0][0])-$NbCycles;$l<=array_key_last($Array[0][0][0])+$NbCycles;$l++){
+	for($i=$MinI-$NbCycles;$i<=$MaxI+$NbCycles;$i++){
+		for($j=$MinJ-$NbCycles;$j<=$MaxJ+$NbCycles;$j++){
+			for($k=$MinK-$NbCycles;$k<=$MaxK+$NbCycles;$k++){
+				for($l=$MinL-$NbCycles;$l<=$MaxL+$NbCycles;$l++){
 					if(!isset($Array[$i][$j][$k][$l])){
 						$ArrayRes[$i][$j][$k][$l]=".";
 					}else{
@@ -54,9 +54,14 @@ function Expend($Array,$NbCycles){
 	}
 	return $ArrayRes;
 }
+$MinI=array_key_first($DataArray);$MaxI=array_key_last($DataArray);
+$MinJ=array_key_first($DataArray[0]);$MaxJ=array_key_last($DataArray[0]);
+$MinK=array_key_first($DataArray[0][0]);$MaxK=array_key_last($DataArray[0][0]);
+$MinL=array_key_first($DataArray[0][0][0]);$MaxL=array_key_last($DataArray[0][0][0]);
 
-$ArrayExpended_Ref=Expend($DataArray,$NbCycles);
+$ArrayExpended_Ref=Expend($DataArray,$NbCycles,$MinI,$MaxI,$MinJ,$MaxJ,$MinK,$MaxK,$MinL,$MaxL);
 $ArrayExpended=$ArrayExpended_Ref;
+
 for($c=0;$c<$NbCycles;$c++){
 	foreach($ArrayExpended_Ref as $Keyx=>$Valx){
 		foreach($ArrayExpended_Ref[$Keyx] as $Keyy=>$Valy){
@@ -67,8 +72,8 @@ for($c=0;$c<$NbCycles;$c++){
 						if($nbNeighboursAct<2 || $nbNeighboursAct>3){
 							$ArrayExpended[$Keyx][$Keyy][$Keyz][$Keyw]=".";
 						}
-					}
-					if($ArrayExpended_Ref[$Keyx][$Keyy][$Keyz][$Keyw]=="."){
+					}else{
+						//if($ArrayExpended_Ref[$Keyx][$Keyy][$Keyz][$Keyw]=="."){
 						if($nbNeighboursAct==3){
 							$ArrayExpended[$Keyx][$Keyy][$Keyz][$Keyw]="#";
 						}
@@ -92,4 +97,8 @@ foreach($ArrayExpended as $Keyx=>$Valx){
 	}
 }
 echo $NbActive;
+
+$fin = microtime(true);
+
+echo "<br><br>temps : ".($fin - $debut);
 ?>
