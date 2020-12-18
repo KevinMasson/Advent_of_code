@@ -6,32 +6,27 @@ while(!feof($data)){
 	$Line = fgets($data);
 	array_push($DataArray, trim($Line));
 }
-$Number=explode(",",$DataArray[0]);
-$Values=array();
-for($i=0;$i<count($Number);$i++){
-	$Values[$Number[$i]]=$i;
+
+$PlayData=array();
+$i=0;
+foreach(explode(',',$DataArray[0]) as $Data){
+	$PlayData[$Data]=$i;
+	$i++;
 }
 
-
-/* Algo ok mais troooop long*/
-/*
-for($i=count($Number);$i<2020;$i++){
-	$Sub_array=$Number;
-	array_pop($Sub_array);
-	if(!in_array(end($Number),$Sub_array)){
-		$LastId[end($Number)]=$i-1;
-		array_push($Number,"0");
+$EnCours=0;
+for($i=count($PlayData);$i<30000000-1;$i++){
+	if(array_key_exists($EnCours,$PlayData)){
+			$Val=$i-$PlayData[$EnCours];
+			$PlayData[$EnCours]=$i;
+			$EnCours=$Val;
 	}else{
-		$Last=end($Number);
-		array_push($Number,strval(($i-1)-$LastId[end($Number)]));
-		$LastId[$Last]=$i-1;
+		$PlayData[$EnCours]=$i;
+		$EnCours=0;
 	}
 }
-echo end($Number)."<br><br>";
-*/
+echo $EnCours;
 $fin = microtime(true);
-
 echo "<br><br>temps : ".($fin - $debut);
-
 
 ?>
