@@ -1,5 +1,5 @@
 <?php
-
+/* hello ! */
 $data = fopen('data.txt', 'r');
 $DataArray=array();
 while(!feof($data)){
