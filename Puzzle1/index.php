@@ -1,5 +1,6 @@
 <?php
 /* hello ! */
+/*Hello from web */
 $data = fopen('data.txt', 'r');
 $DataArray=array();
 while(!feof($data)){
